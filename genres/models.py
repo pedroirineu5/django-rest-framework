@@ -1,4 +1,9 @@
 from django.db import models
 
-class Genres:
+class Genres(models.Model):
+    name = models.CharField(max_length=200)
+
+
+    def __srt__(self):
+        return self.name
     
