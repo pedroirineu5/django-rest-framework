@@ -40,5 +40,10 @@ def genre_view(request):
 
 @csrf_exempt
 def detail_view_genre(request,pk):
-    
+    ## OPERAÇÃO COM O ORM
     genre = Genre.objects.get(pk=pk)
+
+
+    data = {'id': genre.id,'name':genre.name}
+    return JsonResponse(data)
+
