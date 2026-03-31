@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 
-class 
+from genres.models import Genre
+
+
+def genre_view(request):
+    genres = Genre.objects.all()
+    return JsonResponse(genres)

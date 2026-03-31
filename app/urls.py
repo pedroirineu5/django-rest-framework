@@ -1,11 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
-
-def hello_world(request):
-    return JsonResponse({'message':'hello world'})
+from genres.views import genre_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/', hello_world)
+    path('genres/', genre_view)
 ]
+    
