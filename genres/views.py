@@ -50,6 +50,7 @@ def detail_view_genre(request,pk):
         return JsonResponse(data)
     
     elif request.method == 'PUT':
+
         # convertendo os usuarios a usarem o melhor 
         data_user_put = json.loads(request.body.decode('utf-8'))
         genre.name = data_user_put['name']
@@ -61,3 +62,9 @@ def detail_view_genre(request,pk):
                 'name': genre.name
             }
         ) 
+    
+    if request.method == 'DELETE':
+        genre.delete()
+        JsonResponse(
+            {"Message" : "The Data has been delete successfully!"}
+        )
