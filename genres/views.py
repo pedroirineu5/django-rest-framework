@@ -3,9 +3,20 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import genericss
+from rest_framework import generics
 
 from genres.models import Genre
+
+
+class GenreCreateListView(generics.ListCreateAPIView):
+
+    # função que presta para puxar tudo do banco de dados
+    queryset = Genre.objects.all()
+    # vai transformar os objetos em python para JSON como request e response
+    # Eles funcionam na serialização: Que transforma o objeto python em JSON (SAIDA DE DADOS NA APLICAÇÃO)
+    # e tbm na DESSERIALIZAÇÃO: que transforma do json para um objeto python em assim usar nas validações do backend. (Entrada de dados na APLICAÇÃO)
+    serializer_class = None
+
 
 
 # fazendo no braço para entender tudo
