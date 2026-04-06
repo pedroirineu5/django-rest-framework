@@ -56,32 +56,38 @@ class GenreCreateListView(generics.ListCreateAPIView):
 #             status = 201,
 #         )
 
-@csrf_exempt
-def detail_view_genre(request,pk):
-    
-    # OPERAÇÃO COM O ORM
-    genre = get_object_or_404(Genre, pk=pk)
 
-    if request.method == 'GET':
-        data = {'id': genre.id,'name':genre.name}
-        return JsonResponse(data)
-    
-    elif request.method == 'PUT':
 
-        # convertendo os usuarios a usarem o melhor 
-        data_user_put = json.loads(request.body.decode('utf-8'))
-        genre.name = data_user_put['name']
-        genre.save()
+class GenreRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer    
+
+# @csrf_exempt
+# def detail_view_genre(request,pk):
+    
+#     # OPERAÇÃO COM O ORM
+#     genre = get_object_or_404(Genre, pk=pk)
+
+#     if request.method == 'GET':
+#         data = {'id': genre.id,'name':genre.name}
+#         return JsonResponse(data)
+    
+#     elif request.method == 'PUT':
+
+#         # convertendo os usuarios a usarem o melhor 
+#         data_user_put = json.loads(request.body.decode('utf-8'))
+#         genre.name = data_user_put['name']
+#         genre.save()
         
-        return JsonResponse(
-            {
-                'id': genre.id,
-                'name': genre.name
-            }
-        ) 
+#         return JsonResponse(
+#             {
+#                 'id': genre.id,
+#                 'name': genre.name
+#             }
+#         ) 
     
-    if request.method == 'DELETE':
-        genre.delete()
-        JsonResponse(
-            {"Message" : "The Data has been delete successfully!"}
-        )
+#     if request.method == 'DELETE':
+#         genre.delete()
+#         JsonResponse(
+#             {"Message" : "The Data has been delete successfully!"}
+#         )
