@@ -11,3 +11,4 @@ class DevelopersCreateClass(generics.ListCreateAPIView):
 
 class DevelopersDetailUpdateDestroyClass(generics.RetrieveUpdateDestroyAPIView):
     queryset = Developers.objects.all()
+    serializer_class = DevelopersSerializers
