@@ -7,3 +7,4 @@ class DevelopersSerializers(serializers.ModelSerializer):
     class Meta:
         model = Developers
         fields = '__all__'
+        
