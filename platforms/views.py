@@ -6,9 +6,9 @@ from platforms.serializers import PlatformSerializers
 
 
 class PlatformCreateView(generics.ListCreateAPIView):
-    model = Platforms
+    queryset = Platforms.objects.all()
     serializer_class = PlatformSerializers
 
-class PlatformRetrieve(generics.RetrieveUpdateDestroyAPIView):
-    model = Platforms
+class PlatformRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Platforms.objects.all()
     serializer_class = PlatformSerializers

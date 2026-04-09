@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from games.models import Games
+
+
+class GamesListCreateView(generics.ListCreateAPIView):
+    queryset = Games.objects.all()
+    serializer_class = ...
+
+class GamesRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Games.objects.all()
+    serializer_class = ...
