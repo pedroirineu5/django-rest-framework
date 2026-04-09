@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'platforms',
     'publisher',
     'games',
+    'reviews',
 ]
 
 MIDDLEWARE = [

@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from reviews.models import Review
+
+
+class ReviewCreate(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    # TODO colocar o serializer class
+    serializer_class = ...
+
+
+class ReviewRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    # TODO colocar o serializer class
+    serializer_class = ...
