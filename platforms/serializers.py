@@ -4,5 +4,6 @@ from platforms.models import Platforms
 
 
 class PlatformSerializers(serializers.ModelSerializer):
-    model = Platforms
-    fields = '__all__'
+    class Meta:
+        model = Platforms
+        fields = '__all__'

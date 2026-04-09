@@ -3,6 +3,7 @@ from rest_framework import serializers
 from games.models import Games
 
 
-class GamesSerializers(serializers.DjangoModelField):
-    model = Games
-    fields = '__all__'
+class GamesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Games
+        fields = "__all__"
