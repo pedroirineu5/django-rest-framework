@@ -24,6 +24,6 @@ urlpatterns = [
     path('games/', GamesListCreateView.as_view(), name='games_list'),
     path('games/<int:pk>/', GamesRetrieveUpdateDestroyAPIView.as_view(), name="games_detail"),
     path('review/', ReviewCreate.as_view(), name='review_list'),
-    path('review/<int:pk>', ReviewRetrieveUpdateDestroy.as_view(), name='review_detail'),
+    path('review/<int:pk>/', ReviewRetrieveUpdateDestroy.as_view(), name='review_detail'),
 ]
     
