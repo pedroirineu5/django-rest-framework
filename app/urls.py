@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from developers.views import (DevelopersCreateClass,
                               DevelopersDetailUpdateDestroyClass)
@@ -13,10 +13,9 @@ from reviews.views import ReviewCreate, ReviewRetrieveUpdateDestroy
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('genres/',GenreCreateListView.as_view() , name='genres_list'),
-    path('genres/<int:pk>/', GenreRetrieveUpdateDestroyView.as_view(), name='genres_detail'),
-    path('developers/', DevelopersCreateClass.as_view(), name='developers_list'),
-    path('developers/<int:pk>/', DevelopersDetailUpdateDestroyClass.as_view(),name='developers_detail'),
+
+    path("api/v1/", include('genres.urls')),
+
     path('platforms/',PlatformCreateView.as_view(),name='platforms_list' ),
     path('platforms/<int:pk>/',PlatformRetrieveUpdateDestroyAPIView.as_view(), name='platforms_detail'),
     path('publisher/',PublisherCreateListView.as_view(),name='publisher_list'),
