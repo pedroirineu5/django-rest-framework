@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'publisher',
     'games',
     'reviews',
+    'authentication',
 ]
 
 MIDDLEWARE = [
