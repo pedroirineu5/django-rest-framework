@@ -1,0 +1,514 @@
+{
+	"info": {
+		"name": "Django Games API",
+		"description": "Collection para a API REST (Django REST Framework + Simple JWT).\n\n**Variáveis:** `baseUrl` (ex.: http://127.0.0.1:8000), `accessToken` (preenchido pelo script de Login JWT).\n\n**Auth:** Bearer JWT na collection. Endpoints de token não usam Bearer.\n\n**Atenção no projeto:**\n- `app/urls.py` precisa de vírgula após `include('reviews.urls')` e remover `path('')` inválido para o servidor subir.\n- Em `publisher/urls.py` as rotas estão como `platforms/`, igual ao app `platforms` — só a primeira rota é usada. Troque para `publishers/` e use os URLs desta pasta *Publishers*.\n\n**Permissões:** não há `DEFAULT_PERMISSION_CLASSES` nas settings; JWT é opcional salvo se você adicionar permissões nas views.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "genreId",
+			"value": "1"
+		},
+		{
+			"key": "developerId",
+			"value": "1"
+		},
+		{
+			"key": "platformId",
+			"value": "1"
+		},
+		{
+			"key": "publisherId",
+			"value": "1"
+		},
+		{
+			"key": "gameId",
+			"value": "1"
+		},
+		{
+			"key": "reviewId",
+			"value": "1"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth (JWT)",
+			"item": [
+				{
+					"name": "Obter tokens (login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const j = pm.response.json();",
+									"    if (j.access) pm.collectionVariables.set('accessToken', j.access);",
+									"    if (j.refresh) pm.collectionVariables.set('refreshToken', j.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"seu_usuario\",\n  \"password\": \"sua_senha\"\n}"
+						},
+						"url": "{{baseUrl}}/api/token/",
+						"description": "Simple JWT: retorna `access` e `refresh`. O script salva nas variáveis da collection."
+					}
+				},
+				{
+					"name": "Renovar access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const j = pm.response.json();",
+									"    if (j.access) pm.collectionVariables.set('accessToken', j.access);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refreshToken}}\"\n}"
+						},
+						"url": "{{baseUrl}}/api/token/refresh/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Listar / Criar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/genres/"
+					}
+				},
+				{
+					"name": "Criar genre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"RPG\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/"
+					}
+				},
+				{
+					"name": "Detalhe / Atualizar / Apagar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/genres/{{genreId}}/"
+					}
+				},
+				{
+					"name": "Atualizar genre (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"RPG Tático\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/{{genreId}}/"
+					}
+				},
+				{
+					"name": "Atualizar parcial (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ação\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/{{genreId}}/"
+					}
+				},
+				{
+					"name": "Apagar genre",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/genres/{{genreId}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Developers",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/developers/"
+					}
+				},
+				{
+					"name": "Criar developer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hideo Kojima\",\n  \"age\": 61,\n  \"birthday\": \"1963-08-24\",\n  \"nationality\": \"JAPAN\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/developers/",
+						"description": "`nationality`: um de USA | BRAZIL | JAPAN (valores do modelo)."
+					}
+				},
+				{
+					"name": "Detalhe",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/developers/{{developerId}}/"
+					}
+				},
+				{
+					"name": "Atualizar (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hideo Kojima\",\n  \"age\": 61,\n  \"birthday\": \"1963-08-24\",\n  \"nationality\": \"JAPAN\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/developers/{{developerId}}/"
+					}
+				},
+				{
+					"name": "Apagar",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/developers/{{developerId}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Platforms",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/platforms/"
+					}
+				},
+				{
+					"name": "Criar platform",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PS5\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/platforms/",
+						"description": "`name`: um dos valores PLATFORMS_CHOICES (ex.: PC_STEAM, PS5, NINT_SWITCH, ...)."
+					}
+				},
+				{
+					"name": "Detalhe",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/platforms/{{platformId}}/"
+					}
+				},
+				{
+					"name": "Atualizar (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PS4\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/platforms/{{platformId}}/"
+					}
+				},
+				{
+					"name": "Apagar",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/platforms/{{platformId}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Publishers",
+			"description": "No código atual, `publisher/urls.py` usa o prefixo `platforms/`, que conflita com o app `platforms`. Ajuste para `path('publishers/', ...)` e estes URLs passam a funcionar.",
+			"item": [
+				{
+					"name": "Listar publishers",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/publishers/"
+					}
+				},
+				{
+					"name": "Criar publisher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sony Interactive Entertainment\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/publishers/"
+					}
+				},
+				{
+					"name": "Detalhe publisher",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisherId}}/"
+					}
+				},
+				{
+					"name": "Atualizar publisher (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"SIE\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisherId}}/"
+					}
+				},
+				{
+					"name": "Apagar publisher",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisherId}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Games",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/games/"
+					}
+				},
+				{
+					"name": "Criar game",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name_game\": \"Death Stranding\",\n  \"genre\": 1,\n  \"developers\": [1],\n  \"publisher\": 1,\n  \"platform\": [1],\n  \"release_date\": \"2019-11-08\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/games/",
+						"description": "`release_date` deve ser >= 1962 (validação no serializer). Resposta inclui `rate` (média das reviews) somente leitura."
+					}
+				},
+				{
+					"name": "Detalhe",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/games/{{gameId}}/"
+					}
+				},
+				{
+					"name": "Atualizar (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name_game\": \"Death Stranding Director's Cut\",\n  \"genre\": 1,\n  \"developers\": [1],\n  \"publisher\": 1,\n  \"platform\": [1, 2],\n  \"release_date\": \"2021-09-24\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/games/{{gameId}}/"
+					}
+				},
+				{
+					"name": "Apagar",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/games/{{gameId}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/review/"
+					}
+				},
+				{
+					"name": "Criar review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"game\": 1,\n  \"grade\": 4,\n  \"comment\": \"Excelente narrativa.\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/review/",
+						"description": "`grade`: inteiro de 0 a 5."
+					}
+				},
+				{
+					"name": "Detalhe",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/api/v1/review/{{reviewId}}/"
+					}
+				},
+				{
+					"name": "Atualizar (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"game\": 1,\n  \"grade\": 5,\n  \"comment\": \"Atualizado.\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/review/{{reviewId}}/"
+					}
+				},
+				{
+					"name": "Apagar",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/api/v1/review/{{reviewId}}/"
+					}
+				}
+			]
+		}
+	]
+}
