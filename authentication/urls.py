@@ -1,4 +1,9 @@
 from django.urls import path
 from . import views
+from rest_framework_simplejwt.views import AuthenticationView
 
+## TODO  continuar com auth jwt
 
+urlpatterns = [
+    path('authentication/token/',AuthenticationView.as_view(), name='authentication'),
+]
