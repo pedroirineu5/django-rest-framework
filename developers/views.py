@@ -4,14 +4,16 @@ from rest_framework.permissions import IsAuthenticated
 
 from developers.models import Developers
 from developers.serializers import DevelopersSerializers
-
+from developers.permissions import  DevelopersPermissionClass
 
 class DevelopersCreateClass(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
+    # com base na classe de permissão, agora essas duas views estão trancadas pq elas sempre vao retornar false.
+    #
+    permission_classes = (IsAuthenticated, DevelopersPermissionClass)
     queryset = Developers.objects.all()
     serializer_class = DevelopersSerializers
 
 class DevelopersDetailUpdateDestroyClass(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DevelopersPermissionClass)
     queryset = Developers.objects.all()
     serializer_class = DevelopersSerializers
