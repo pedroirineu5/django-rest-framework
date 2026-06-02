@@ -2,8 +2,18 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-game-api-drf",
 		"name": "Django Game API (DRF)",
-		"description": "Coleção da API REST em `api/v1/`.\n\n**Auth:** JWT (Simple JWT). `POST .../authentication/token/` grava `access_token` e `refresh_token` nas variáveis da coleção (script de testes). As views atuais não exigem login; se você adicionar `IsAuthenticated`, configure o header `Authorization: Bearer {{access_token}}` nas pastas ou na coleção.\n\n**Conflito de rotas:** `publisher/urls.py` registra `platforms/` igual ao app `platforms`, que vem antes em `app/urls.py`. As rotas de *publisher* nesse path não são alcançadas até corrigir os paths (ex.: `publishers/`).\n\n**Games (POST):** `genre` e `publisher` são FK (id inteiro); `developers` e `platform` são ManyToMany (lista de ids). `release_date` opcional, formato `YYYY-MM-DD`, ano ≥ 1962.\n\n**Developers:** `nationality` aceita `USA`, `BRAZIL`, `JAPAN`.\n\n**Platforms:** `name` deve ser um dos valores do choice (ex.: `PS5`, `PC_STEAM`).",
+		"description": "Coleção da API REST em `api/v1/`.\n\n**Auth:** JWT (Simple JWT). Execute `Obtain JWT (token pair)` primeiro; o script grava `access_token` e `refresh_token`. A coleção usa `Bearer {{access_token}}` em todas as requisições (exceto auth).\n\n**Conflito de rotas:** `publisher/urls.py` registra `platforms/` igual ao app `platforms`, que vem antes em `app/urls.py`. As rotas de *publisher* nesse path não são alcançadas até corrigir os paths (ex.: `publishers/`).\n\n**Games (POST):** `genre` e `publisher` são FK (id inteiro); `developers` e `platform` são ManyToMany (lista de ids). `release_date` opcional, formato `YYYY-MM-DD`, ano ≥ 1962. Campo `rate` é somente leitura (média das reviews).\n\n**Developers:** `nationality` aceita `USA`, `BRAZIL`, `JAPAN`.\n\n**Platforms:** `name` deve ser um dos choices: `PC_STEAM`, `XBOX_360`, `XBOX_ONE`, `XBOX_SERIES`, `PS4`, `PS5`, `NINT_SWITCH`.\n\n**Reviews:** `grade` de 0 a 5.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
 	},
 	"variable": [
 		{
@@ -12,6 +22,10 @@
 		},
 		{
 			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "refresh_token",
 			"value": ""
 		},
 		{
@@ -27,16 +41,16 @@
 			"value": "1"
 		},
 		{
+			"key": "publisher_id",
+			"value": "1"
+		},
+		{
 			"key": "game_id",
 			"value": "1"
 		},
 		{
 			"key": "review_id",
 			"value": "1"
-		},
-		{
-			"key": "refresh_token",
-			"value": ""
 		}
 	],
 	"item": [
@@ -74,6 +88,58 @@
 							"raw": "{\n  \"username\": \"seu_usuario\",\n  \"password\": \"sua_senha\"\n}"
 						},
 						"url": "{{baseUrl}}/api/v1/authentication/token/"
+					}
+				},
+				{
+					"name": "Refresh JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.access) { pm.collectionVariables.set('access_token', json.access); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/api/token/refresh/"
+					}
+				},
+				{
+					"name": "Verify JWT",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"{{access_token}}\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/api/token/verify/"
 					}
 				}
 			]
@@ -319,6 +385,87 @@
 			]
 		},
 		{
+			"name": "Publishers",
+			"description": "Rotas definidas em `publisher/urls.py` como `platforms/` (conflito com o app platforms). Após corrigir para `publishers/`, ajuste as URLs abaixo.",
+			"item": [
+				{
+					"name": "List publishers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/publishers/"
+					}
+				},
+				{
+					"name": "Create publisher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sony Interactive Entertainment\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/publishers/"
+					}
+				},
+				{
+					"name": "Retrieve publisher",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisher_id}}/"
+					}
+				},
+				{
+					"name": "Update publisher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nintendo\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisher_id}}/"
+					}
+				},
+				{
+					"name": "Partial update publisher",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Microsoft\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisher_id}}/"
+					}
+				},
+				{
+					"name": "Delete publisher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/publishers/{{publisher_id}}/"
+					}
+				}
+			]
+		},
+		{
 			"name": "Games",
 			"item": [
 				{
@@ -394,6 +541,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": "{{baseUrl}}/api/v1/games/{{game_id}}/"
+					}
+				},
+				{
+					"name": "Games stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/games/stats/"
 					}
 				}
 			]
