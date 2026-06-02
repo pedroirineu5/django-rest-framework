@@ -1,10 +1,10 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
+from django import views
 from games.models import Games
 from rest_framework.permissions import IsAuthenticated
-from games.serializers import GamesSerializers
-
+from games.serializers import GamesSerializers 
+from rest_framework.status import HTTP_200_OK
 
 class GamesListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
@@ -22,5 +22,13 @@ class GamesStatsView(views.APIView):
     queryset = Games.objects.all()
 
 
-    
-    def get()
+
+    def get(self,request):
+        total_game = self.queryset.count()
+
+        return request.Response(
+            data={
+                "total_game": total_game
+            },
+            status=HTTP_200_OK
+        )
