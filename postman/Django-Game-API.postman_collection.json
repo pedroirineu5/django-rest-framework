@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-game-api-drf",
+		"name": "Django Game API (DRF)",
+		"description": "Coleção da API REST em `api/v1/`.\n\n**Auth:** JWT (Simple JWT). `POST .../authentication/token/` grava `access_token` e `refresh_token` nas variáveis da coleção (script de testes). As views atuais não exigem login; se você adicionar `IsAuthenticated`, configure o header `Authorization: Bearer {{access_token}}` nas pastas ou na coleção.\n\n**Conflito de rotas:** `publisher/urls.py` registra `platforms/` igual ao app `platforms`, que vem antes em `app/urls.py`. As rotas de *publisher* nesse path não são alcançadas até corrigir os paths (ex.: `publishers/`).\n\n**Games (POST):** `genre` e `publisher` são FK (id inteiro); `developers` e `platform` são ManyToMany (lista de ids). `release_date` opcional, formato `YYYY-MM-DD`, ano ≥ 1962.\n\n**Developers:** `nationality` aceita `USA`, `BRAZIL`, `JAPAN`.\n\n**Platforms:** `name` deve ser um dos valores do choice (ex.: `PS5`, `PC_STEAM`).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "genre_id",
+			"value": "1"
+		},
+		{
+			"key": "developer_id",
+			"value": "1"
+		},
+		{
+			"key": "platform_id",
+			"value": "1"
+		},
+		{
+			"key": "game_id",
+			"value": "1"
+		},
+		{
+			"key": "review_id",
+			"value": "1"
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Obtain JWT (token pair)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.access) { pm.collectionVariables.set('access_token', json.access); }",
+									"if (json.refresh) { pm.collectionVariables.set('refresh_token', json.refresh); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"seu_usuario\",\n  \"password\": \"sua_senha\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/authentication/token/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "List genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/genres/"
+					}
+				},
+				{
+					"name": "Create genre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"RPG\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/"
+					}
+				},
+				{
+					"name": "Retrieve genre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/genres/{{genre_id}}/"
+					}
+				},
+				{
+					"name": "Update genre (full)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Action RPG\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/{{genre_id}}/"
+					}
+				},
+				{
+					"name": "Partial update genre",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Strategy\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/genres/{{genre_id}}/"
+					}
+				},
+				{
+					"name": "Delete genre",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/genres/{{genre_id}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Developers",
+			"item": [
+				{
+					"name": "List developers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/developers/"
+					}
+				},
+				{
+					"name": "Create developer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hideo Kojima\",\n  \"age\": 61,\n  \"birthday\": \"1963-08-24\",\n  \"nationality\": \"JAPAN\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/developers/"
+					}
+				},
+				{
+					"name": "Retrieve developer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/developers/{{developer_id}}/"
+					}
+				},
+				{
+					"name": "Update developer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hideo Kojima\",\n  \"age\": 61,\n  \"birthday\": \"1963-08-24\",\n  \"nationality\": \"JAPAN\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/developers/{{developer_id}}/"
+					}
+				},
+				{
+					"name": "Partial update developer",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"age\": 62\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/developers/{{developer_id}}/"
+					}
+				},
+				{
+					"name": "Delete developer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/developers/{{developer_id}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Platforms",
+			"item": [
+				{
+					"name": "List platforms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/platforms/"
+					}
+				},
+				{
+					"name": "Create platform",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PS5\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/platforms/"
+					}
+				},
+				{
+					"name": "Retrieve platform",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/platforms/{{platform_id}}/"
+					}
+				},
+				{
+					"name": "Update platform",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PC_STEAM\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/platforms/{{platform_id}}/"
+					}
+				},
+				{
+					"name": "Partial update platform",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"NINT_SWITCH\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/platforms/{{platform_id}}/"
+					}
+				},
+				{
+					"name": "Delete platform",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/platforms/{{platform_id}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Games",
+			"item": [
+				{
+					"name": "List games",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/games/"
+					}
+				},
+				{
+					"name": "Create game",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name_game\": \"Meu Jogo\",\n  \"genre\": 1,\n  \"publisher\": 1,\n  \"developers\": [1],\n  \"platform\": [1],\n  \"release_date\": \"2024-01-15\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/games/"
+					}
+				},
+				{
+					"name": "Retrieve game",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/games/{{game_id}}/"
+					}
+				},
+				{
+					"name": "Update game",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name_game\": \"Meu Jogo Atualizado\",\n  \"genre\": 1,\n  \"publisher\": 1,\n  \"developers\": [1],\n  \"platform\": [1],\n  \"release_date\": \"2024-06-01\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/games/{{game_id}}/"
+					}
+				},
+				{
+					"name": "Partial update game",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name_game\": \"Só o nome\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/games/{{game_id}}/"
+					}
+				},
+				{
+					"name": "Delete game",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/games/{{game_id}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "List reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/review/"
+					}
+				},
+				{
+					"name": "Create review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"game\": 1,\n  \"grade\": 5,\n  \"comment\": \"Excelente.\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/review/"
+					}
+				},
+				{
+					"name": "Retrieve review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/review/{{review_id}}/"
+					}
+				},
+				{
+					"name": "Update review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"game\": 1,\n  \"grade\": 4,\n  \"comment\": \"Muito bom.\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/review/{{review_id}}/"
+					}
+				},
+				{
+					"name": "Partial update review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": 3\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/review/{{review_id}}/"
+					}
+				},
+				{
+					"name": "Delete review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/review/{{review_id}}/"
+					}
+				}
+			]
+		}
+	]
+}
