@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_200_OK
 
+from django.db.models import Count, Avg, Sum, Max, Min
 from reviews.models import Review
 from games.models import Games
 from games.serializers import GamesSerializers 
@@ -23,8 +24,9 @@ class GamesStatsView(views.APIView):
     queryset = Games.objects.all()
 
     def get(self,request):
-        total_game = self.queryset.count()
-        total_review = Review.queryset.count()
+        total_game = self.queryset.aggregate(total=Count('id'))
+        total_review = Review.queryset.Count()
+        total_game_per_genre = Games.objects.Count().aggregate()
         return request.Response(
             data={
                 "total_game": total_game,
