@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_200_OK
 
+from reviews.models import Review
 from games.models import Games
 from games.serializers import GamesSerializers 
 
@@ -23,10 +24,11 @@ class GamesStatsView(views.APIView):
 
     def get(self,request):
         total_game = self.queryset.count()
-
+        total_review = Review.queryset.count()
         return request.Response(
             data={
-                "total_game": total_game
+                "total_game": total_game,
+                "total_review": total_review
             },
             status=HTTP_200_OK
         )
