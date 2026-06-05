@@ -28,3 +28,7 @@ class GamesSerializers(serializers.ModelSerializer):
         if value.year < 1962:
             raise serializers.ValidationError('A data de lançamento não pode ser menor que 1962')
         return value
+
+class GameStatsSerializers(serializers.Serializer):
+    total_game = serializers.IntegerField
+    total_review = serializers.FloatField
