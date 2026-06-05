@@ -6,7 +6,7 @@ from rest_framework.status import HTTP_200_OK
 from django.db.models import Count, Avg, Sum, Max, Min
 from reviews.models import Review
 from games.models import Games
-from games.serializers import GamesSerializers 
+from games.serializers import GamesSerializers, GameStatsSerializers
 
 class GamesListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
@@ -26,11 +26,17 @@ class GamesStatsView(views.APIView):
     def get(self,request):
         total_game = self.queryset.aggregate(total=Count('id'))
         total_review = Review.queryset.Count()
-        total_game_per_genre = Games.objects.Count().aggregate()
-        return request.Response(
-            data={
+        # total_game_per_genre = Games.objects.Count().aggregate()
+        
+        game_stats={
                 "total_game": total_game,
                 "total_review": total_review
             },
+        
+        serializer = GameStatsSerializers(data=game_stats)
+        serializer.is_valid(raise_exception=True)
+        
+        return request.Response(
+            data=serializer,
             status=HTTP_200_OK
         )
