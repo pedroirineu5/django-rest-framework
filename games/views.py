@@ -1,12 +1,12 @@
+from django.db.models import Avg, Count, Max, Min, Sum
 from rest_framework import generics, views
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_200_OK
 
-from django.db.models import Count, Avg, Sum, Max, Min
-from reviews.models import Review
 from games.models import Games
 from games.serializers import GamesSerializers, GameStatsSerializers
+from reviews.models import Review
+
 
 class GamesListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)

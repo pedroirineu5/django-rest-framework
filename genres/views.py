@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+
 from genres.models import Genre
 from genres.serializers import GenreSerializer
 
@@ -40,7 +41,7 @@ class GenreRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 #         data = []
 #         for genre in genres:
 #             data.append(
-#                 {
+#                 {`"`
 #                     'id': genre.id,
 #                     'name': genre.name
 #                 }
